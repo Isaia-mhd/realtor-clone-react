@@ -25,14 +25,9 @@ export default function OAuth() {
           email: user.email,
           timestamp: serverTimestamp(),
         });
-        navigate("/")
-      } else{
-        toast.error("User already registered !")
-        navigate("/sign-up")
-
       }
+      navigate("/")
      
-
     } catch (error) {
       console.log(error);
       toast.error("Couldn't authorize with Google");
