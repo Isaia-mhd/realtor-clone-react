@@ -12,7 +12,7 @@ export function useAuthStatus() {
             if(user){
                 setLoggedIn(true)
             }
-            setCheckingStatus(false)
+            setCheckingStatus(false) // for loading 
         });
     }, [])
     return {loggedIn, checkingStatus}

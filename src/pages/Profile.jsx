@@ -62,7 +62,7 @@ export default function Profile() {
           data: doc.data(),
         });
       });
-      setListings(listings);
+      setListings(listings);  
       setLoading(false);
 
     }
