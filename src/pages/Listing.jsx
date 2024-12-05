@@ -1,4 +1,5 @@
 import { doc, getDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { db } from '../firebase';
@@ -7,10 +8,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { EffectFade, Autoplay, Navigation, Pagination} from "swiper";
 import "swiper/css/bundle";
 import { FaShare, FaMapMarkerAlt, FaBed, FaBath, FaParking, FaChair } from "react-icons/fa";
+import Contact from '../components/Contact';
 
 
 
 export default function Listing() {
+    const auth = getAuth();
+    const [landLordContact, setLandLordContact] = useState(false);
     const params = useParams();
     const [listing, setListing] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -57,7 +61,7 @@ export default function Listing() {
     {shareLinkCopied && <p className="fixed top-[23%] right-[3%] border-2 border-gray-400 rounded-md bg-white z-10">Link Copied</p>}
 
     <div className="w-full flex flex-col md:flex-row max-w-6xl lg:mx-auto p-4 bg-white rounded-lg shadow-md md:space-x-5  mt-3">
-        <div className="w-full h-[200px] lg-[400px] " >
+        <div className="w-full lg-[400px] " >
             <p className="text-2xl text-blue-900 font-semibold ">
                 {listing.name} - ${" "}
                 {listing.type === "rent" 
@@ -83,12 +87,21 @@ export default function Listing() {
             
             <p className="mt-3"><span className="font-semibold">Description</span> - {listing.description} </p>
 
-            <ul className="flex gap-[40px] mt-3">
+            <ul className="flex gap-[40px] mt-3 mb-6">
                 <li className="flex gap-[2px] text-sm items-center font-semibold"><FaBed /> {listing.bedrooms > 1 ? `${listing.bedrooms} beds` : "1 bed"} </li>
                 <li className="flex gap-[2px] text-sm items-center font-semibold"><FaBath /> {listing.bathrooms > 1 ? `${listing.bathrooms} baths` : "1 bath"}</li>
                 {listing.parking && <li className="flex gap-[2px] text-sm items-center font-semibold"><FaParking /> Parking Spot</li>}
                 {listing.furnished && <li className="flex gap-[2px] text-sm items-center font-semibold"><FaChair /> Furnished</li>}
             </ul>
+             {listing.userRef !== auth.currentUser?.uid && !landLordContact && (
+                <div className="mt-6">
+                    <button className='w-full py-3 px-7 bg-blue-700 rounded text-center text-white uppercase font-medium text-sm hover:bg-blue-800b focus:bg-blue-900 shadow-md' onClick={()=>setLandLordContact(true)}>Contact Landlord</button>
+                </div>
+
+             )}   
+            {landLordContact && (
+                <Contact userRef={listing.userRef} listing={listing} />
+            )}
         </div>
 
         <div className="bg-blue-300 w-full h-[200px] lg-[400px] ">
